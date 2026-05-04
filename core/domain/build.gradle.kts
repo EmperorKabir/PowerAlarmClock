@@ -1,6 +1,7 @@
-﻿plugins {
+plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -18,4 +19,11 @@ android {
 
 dependencies {
     implementation(libs.kotlinx.coroutines)
+    implementation(libs.kotlinx.serialization.json)
+
+    testImplementation(libs.junit5.api)
+    testRuntimeOnly(libs.junit5.engine)
+    testImplementation(libs.kotest.runner)
+    testImplementation(libs.kotest.property)
+    testImplementation(libs.truth)
 }
