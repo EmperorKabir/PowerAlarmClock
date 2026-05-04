@@ -1,6 +1,7 @@
-﻿plugins {
+plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -12,10 +13,16 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions { jvmTarget = "21" }
+    buildFeatures { compose = true }
     sourceSets["main"].kotlin.srcDir("src/main/kotlin")
-    sourceSets["test"].kotlin.srcDir("src/test/kotlin")
 }
 
 dependencies {
+    implementation(project(":core:settings"))
+    implementation(project(":core:ui"))
     implementation(libs.kotlinx.coroutines)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.material3)
 }
