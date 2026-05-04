@@ -117,6 +117,11 @@ dependencies {
     implementation(libs.kotlinx.coroutines)
     implementation(libs.kotlinx.serialization.json)
 
+    // persistence (needed in app for the DI graph)
+    implementation(libs.datastore.preferences)
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+
     // tests
     testImplementation(libs.junit5.api)
     testRuntimeOnly(libs.junit5.engine)

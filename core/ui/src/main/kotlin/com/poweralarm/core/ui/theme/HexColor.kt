@@ -2,7 +2,7 @@ package com.poweralarm.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-internal object HexColor {
+object HexColor {
     private val PATTERN = Regex("^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$")
 
     fun parse(hex: String, fallback: Color = Color.Black): Color {

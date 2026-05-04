@@ -59,3 +59,11 @@ hs_err_pid*
 
 # Superpowers worktrees
 .worktrees/
+
+# Build artefacts not for the repo
+local.properties
+.gradle/
+**/build/
+gradlew
+gradlew.bat
+gradle/wrapper/gradle-wrapper.jar

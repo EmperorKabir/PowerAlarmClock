@@ -8,10 +8,7 @@ plugins {
 android {
     namespace = "com.poweralarm.core.data"
     compileSdk = 35
-    defaultConfig {
-        minSdk = 26
-        ksp { arg("room.schemaLocation", "$projectDir/schemas") }
-    }
+    defaultConfig { minSdk = 26 }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -19,6 +16,11 @@ android {
     kotlinOptions { jvmTarget = "21" }
     sourceSets["main"].kotlin.srcDir("src/main/kotlin")
     sourceSets["test"].kotlin.srcDir("src/test/kotlin")
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+    arg("room.incremental", "true")
 }
 
 dependencies {
