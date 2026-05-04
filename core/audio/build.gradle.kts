@@ -1,4 +1,4 @@
-﻿plugins {
+plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
 }
@@ -17,5 +17,13 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:domain"))
     implementation(libs.kotlinx.coroutines)
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.session)
+
+    testImplementation(libs.junit5.api)
+    testRuntimeOnly(libs.junit5.engine)
+    testImplementation(libs.kotest.runner)
+    testImplementation(libs.truth)
 }
