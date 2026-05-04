@@ -1,0 +1,28 @@
+build:
+  maxIssues: 0
+  weights:
+    complexity: 2
+    LongParameterList: 1
+
+complexity:
+  TooManyFunctions:
+    thresholdInFiles: 25
+    thresholdInClasses: 25
+
+style:
+  MagicNumber:
+    active: true
+    excludes: ['**/test/**', '**/*Spec.kt', '**/core/settings/**']
+    ignoreNumbers: ['-1', '0', '1', '2']
+  ForbiddenComment:
+    active: true
+    values: ['TODO:', 'FIXME:', 'STOPSHIP:']
+
+power-alarm-rules:
+  active: true
+  NoHardcodedAlarmConstant:
+    active: true
+    excludes:
+      - '**/core/settings/**'
+      - '**/test/**'
+      - '**/build/**'
