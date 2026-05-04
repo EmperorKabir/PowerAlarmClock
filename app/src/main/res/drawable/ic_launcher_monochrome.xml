@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Themed-icon monochrome layer (Android 13+ themed icons API). The launcher
+  tints this drawable to match the user's wallpaper palette, so all paths must
+  be the same colour. Composition mirrors ic_launcher_foreground but flattened
+  to a single tint-friendly silhouette.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108"
+    android:tint="?attr/colorControlNormal">
+
+    <!-- Bed -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M22,72 L86,72 L86,86 L22,86 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M22,66 L86,66 L86,72 L22,72 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M24,86 L30,86 L30,90 L24,90 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M78,86 L84,86 L84,90 L78,90 Z" />
+
+    <!-- Pillow -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M22,58 L46,58 L46,68 L22,68 Z" />
+
+    <!-- Monkey head -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M34,46 m-13,0 a13,13 0 1,0 26,0 a13,13 0 1,0 -26,0" />
+
+    <!-- Ears -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M22,42 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M46,42 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" />
+
+    <!-- Nightcap -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M22,38 L46,38 L52,22 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M52,22 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" />
+
+    <!-- Clock bells -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M70,42 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M82,42 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" />
+
+    <!-- Clock body -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M76,55 m-12,0 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0" />
+
+    <!-- Clock feet -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M66,66 L70,66 L70,69 L66,69 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M82,66 L86,66 L86,69 L82,69 Z" />
+
+    <!-- Z Z Z -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M52,32 L60,32 L52,40 L60,40 L60,42 L50,42 L58,34 L50,34 Z" />
+</vector>

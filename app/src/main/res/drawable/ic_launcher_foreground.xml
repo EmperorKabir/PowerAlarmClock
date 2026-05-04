@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Foreground layer for the adaptive icon. All visual content lives inside the
+  inner 66×66 safe zone (centered at 54,54 with ~33 radius) so the artwork is
+  preserved across square / squircle / circle / round / teardrop launcher masks.
+  Style: flat-cartoon. Subject: a sleeping monkey in a nightcap with a classic
+  alarm clock at bedside.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- ── Bed frame back panel ──────────────────────────────────────────────── -->
+    <path
+        android:fillColor="#5D4037"
+        android:pathData="M22,72 L86,72 L86,86 L22,86 Z" />
+
+    <!-- Bed feet -->
+    <path
+        android:fillColor="#3E2723"
+        android:pathData="M24,86 L30,86 L30,90 L24,90 Z" />
+    <path
+        android:fillColor="#3E2723"
+        android:pathData="M78,86 L84,86 L84,90 L78,90 Z" />
+
+    <!-- Mattress -->
+    <path
+        android:fillColor="#FFF8E1"
+        android:pathData="M22,66 L86,66 L86,74 L22,74 Z" />
+
+    <!-- Mattress shadow line -->
+    <path
+        android:fillColor="#EAD7A6"
+        android:pathData="M22,72 L86,72 L86,74 L22,74 Z" />
+
+    <!-- Blanket (teal stripe) covering monkey body -->
+    <path
+        android:fillColor="#0F4C4A"
+        android:pathData="M22,66 L60,66 L60,80 L22,80 Z" />
+    <path
+        android:fillColor="#00C2B8"
+        android:pathData="M22,68 L60,68 L60,72 L22,72 Z" />
+
+    <!-- Blanket fold detail -->
+    <path
+        android:fillColor="#26A69A"
+        android:pathData="M28,68 L32,68 L32,72 L28,72 Z" />
+    <path
+        android:fillColor="#26A69A"
+        android:pathData="M44,68 L48,68 L48,72 L44,72 Z" />
+
+    <!-- Pillow -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M22,58 L46,58 L46,68 L22,68 Z" />
+    <path
+        android:fillColor="#E0F2F1"
+        android:pathData="M24,66 L44,66 L44,68 L24,68 Z" />
+
+    <!-- ── Monkey head ───────────────────────────────────────────────────────── -->
+    <!-- Outer fur -->
+    <path
+        android:fillColor="#6D4C41"
+        android:pathData="M34,46 m-13,0 a13,13 0 1,0 26,0 a13,13 0 1,0 -26,0" />
+
+    <!-- Ears -->
+    <path
+        android:fillColor="#6D4C41"
+        android:pathData="M22,42 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" />
+    <path
+        android:fillColor="#6D4C41"
+        android:pathData="M46,42 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" />
+    <path
+        android:fillColor="#FFCCBC"
+        android:pathData="M22,42 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0" />
+    <path
+        android:fillColor="#FFCCBC"
+        android:pathData="M46,42 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0" />
+
+    <!-- Face mask (lighter inner) -->
+    <path
+        android:fillColor="#D7B49A"
+        android:pathData="M34,49 m-9,0 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0" />
+
+    <!-- Muzzle -->
+    <path
+        android:fillColor="#F2D5B0"
+        android:pathData="M34,52 m-6,-2 a6,4 0 1,0 12,0 a6,4 0 1,0 -12,0" />
+
+    <!-- Closed eye left ( ‿ ) -->
+    <path
+        android:strokeColor="#3E2723"
+        android:strokeWidth="1.4"
+        android:fillColor="#00000000"
+        android:pathData="M28,46 q1.6,-2 3.2,0" />
+
+    <!-- Closed eye right ( ‿ ) -->
+    <path
+        android:strokeColor="#3E2723"
+        android:strokeWidth="1.4"
+        android:fillColor="#00000000"
+        android:pathData="M37,46 q1.6,-2 3.2,0" />
+
+    <!-- Gentle smile -->
+    <path
+        android:strokeColor="#3E2723"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:pathData="M31.5,53 q2.5,2 5,0" />
+
+    <!-- Nostrils -->
+    <path
+        android:fillColor="#3E2723"
+        android:pathData="M32.6,51.2 m-0.4,0 a0.4,0.4 0 1,0 0.8,0 a0.4,0.4 0 1,0 -0.8,0" />
+    <path
+        android:fillColor="#3E2723"
+        android:pathData="M35.4,51.2 m-0.4,0 a0.4,0.4 0 1,0 0.8,0 a0.4,0.4 0 1,0 -0.8,0" />
+
+    <!-- ── Nightcap ──────────────────────────────────────────────────────────── -->
+    <!-- Cap brim (stripe across forehead) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M22,38 L46,38 L46,42 L22,42 Z" />
+
+    <!-- Cap body (drooping triangle to the right) -->
+    <path
+        android:fillColor="#FF5252"
+        android:pathData="M22,38 L46,38 L52,22 Z" />
+
+    <!-- Cap stripes -->
+    <path
+        android:fillColor="#C62828"
+        android:pathData="M28,38 L46,38 L48,32 L31.5,32 Z" />
+
+    <!-- Cap pompom -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M52,22 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" />
+    <path
+        android:fillColor="#E0F2F1"
+        android:pathData="M52,22 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0" />
+
+    <!-- "Z Z Z" sleep marks -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M52,32 L60,32 L52,40 L60,40 L60,42 L50,42 L58,34 L50,34 Z" />
+    <path
+        android:fillColor="#E0F2F1"
+        android:pathData="M62,26 L67,26 L62,32 L67,32 L67,33.5 L60,33.5 L65,27.5 L60,27.5 Z" />
+
+    <!-- ── Bedside table top ─────────────────────────────────────────────────── -->
+    <path
+        android:fillColor="#8D6E63"
+        android:pathData="M64,64 L92,64 L92,68 L64,68 Z" />
+
+    <!-- ── Alarm clock ───────────────────────────────────────────────────────── -->
+    <!-- Bells -->
+    <path
+        android:fillColor="#5D4037"
+        android:pathData="M70,42 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" />
+    <path
+        android:fillColor="#5D4037"
+        android:pathData="M82,42 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" />
+
+    <!-- Bell hammer -->
+    <path
+        android:strokeColor="#3E2723"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:pathData="M76,42 L76,46" />
+
+    <!-- Clock body -->
+    <path
+        android:fillColor="#3E2723"
+        android:pathData="M76,55 m-12,0 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0" />
+
+    <!-- Clock face -->
+    <path
+        android:fillColor="#FFFDE7"
+        android:pathData="M76,55 m-9.5,0 a9.5,9.5 0 1,0 19,0 a9.5,9.5 0 1,0 -19,0" />
+
+    <!-- Hour ticks (12, 3, 6, 9) -->
+    <path
+        android:fillColor="#3E2723"
+        android:pathData="M75,47 L77,47 L77,49 L75,49 Z" />
+    <path
+        android:fillColor="#3E2723"
+        android:pathData="M83,54 L85,54 L85,56 L83,56 Z" />
+    <path
+        android:fillColor="#3E2723"
+        android:pathData="M75,61 L77,61 L77,63 L75,63 Z" />
+    <path
+        android:fillColor="#3E2723"
+        android:pathData="M67,54 L69,54 L69,56 L67,56 Z" />
+
+    <!-- Hour hand pointing to ~7 -->
+    <path
+        android:strokeColor="#3E2723"
+        android:strokeWidth="1.4"
+        android:fillColor="#00000000"
+        android:pathData="M76,55 L72,60" />
+
+    <!-- Minute hand pointing to ~12 -->
+    <path
+        android:strokeColor="#3E2723"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:pathData="M76,55 L76,49" />
+
+    <!-- Center pivot -->
+    <path
+        android:fillColor="#FF5252"
+        android:pathData="M76,55 m-1,0 a1,1 0 1,0 2,0 a1,1 0 1,0 -2,0" />
+
+    <!-- Clock feet -->
+    <path
+        android:fillColor="#3E2723"
+        android:pathData="M66,66 L70,66 L70,69 L66,69 Z" />
+    <path
+        android:fillColor="#3E2723"
+        android:pathData="M82,66 L86,66 L86,69 L82,69 Z" />
+</vector>
