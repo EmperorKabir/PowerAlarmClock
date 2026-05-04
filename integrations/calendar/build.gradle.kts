@@ -1,4 +1,4 @@
-﻿plugins {
+plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
 }
@@ -17,5 +17,10 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:domain"))
     implementation(libs.kotlinx.coroutines)
+
+    testImplementation(libs.junit5.api)
+    testRuntimeOnly(libs.junit5.engine)
+    testImplementation(libs.truth)
 }
