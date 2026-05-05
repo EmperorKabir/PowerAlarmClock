@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import com.poweralarm.core.data.AlarmRepositoryImpl
+import com.poweralarm.core.data.db.DismissalEventDao
 import com.poweralarm.core.data.db.PowerAlarmDb
 import com.poweralarm.core.domain.port.AlarmRepository
 import com.poweralarm.core.scheduler.AlarmScheduler
@@ -43,10 +44,15 @@ object AppModule {
 
     @Provides @Singleton
     fun provideDb(@ApplicationContext context: Context): PowerAlarmDb =
-        Room.databaseBuilder(context, PowerAlarmDb::class.java, PowerAlarmDb.NAME).build()
+        Room.databaseBuilder(context, PowerAlarmDb::class.java, PowerAlarmDb.NAME)
+            .addMigrations(PowerAlarmDb.MIGRATION_1_2)
+            .build()
 
     @Provides @Singleton
     fun provideAlarmRepository(db: PowerAlarmDb): AlarmRepository = AlarmRepositoryImpl(db.alarmDao())
+
+    @Provides @Singleton
+    fun provideDismissalDao(db: PowerAlarmDb): DismissalEventDao = db.dismissalEventDao()
 
     @Provides @Singleton
     fun provideNextFireCalculator(): NextFireCalculator = NextFireCalculator()

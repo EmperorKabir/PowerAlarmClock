@@ -9,6 +9,8 @@ data class AlarmEntity(
     val label: String,
     val hour: Int,
     val minute: Int,
+    val timezoneMode: String = "device",
+    val timezoneId: String = "",
     val enabled: Boolean,
     val profileId: String,
     val recurrenceJson: String,

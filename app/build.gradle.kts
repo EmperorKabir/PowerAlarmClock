@@ -84,6 +84,7 @@ dependencies {
     implementation(project(":feature:themes"))
     implementation(project(":feature:statistics"))
     implementation(project(":feature:profiles"))
+    implementation(project(":feature:onboarding"))
 
     // base
     implementation(libs.androidx.core.ktx)

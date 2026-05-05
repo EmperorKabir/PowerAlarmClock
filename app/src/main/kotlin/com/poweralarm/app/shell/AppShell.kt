@@ -4,10 +4,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationDrawerItem
@@ -28,33 +27,40 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 /**
- * Adaptive shell. Switches the primary nav surface based on [windowSize]:
- *   compact  → bottom NavigationBar
- *   medium   → side NavigationRail
- *   expanded → PermanentNavigationDrawer (always-on side panel)
- *
- * Each destination's content is provided by the caller as a slot keyed by the
- * [Destination] enum, so we don't need a NavController for top-level switching.
+ * What the host renders for a given selection.
+ *  - [Destination] is one of the 3 primary tabs (Alarms / Insights / More)
+ *  - [MorePage] is non-null only when the user has drilled into a page from the More tab,
+ *    OR when the wider shell wants to render the page directly (Medium / Expanded show
+ *    Profiles, Theme, Settings, Onboarding inline).
  */
 @Composable
 fun AppShell(
     windowSize: WindowSizeClass,
-    content: @Composable (Destination, PaddingValues) -> Unit,
+    content: @Composable (Destination, MorePage?, PaddingValues, (MorePage) -> Unit) -> Unit,
 ) {
     var current by remember { mutableStateOf(Destination.ALARMS) }
+    var subPage by remember { mutableStateOf<MorePage?>(null) }
+
+    val onSelect: (Destination) -> Unit = { current = it; subPage = null }
+    val onSelectSub: (MorePage) -> Unit = {
+        current = if (windowSize.widthSizeClass == WindowWidthSizeClass.Compact) Destination.MORE else current
+        subPage = it
+    }
 
     when (windowSize.widthSizeClass) {
-        WindowWidthSizeClass.Compact -> CompactShell(current, { current = it }, content)
-        WindowWidthSizeClass.Medium -> MediumShell(current, { current = it }, content)
-        else -> ExpandedShell(current, { current = it }, content)
+        WindowWidthSizeClass.Compact -> CompactShell(current, subPage, onSelect, onSelectSub, content)
+        WindowWidthSizeClass.Medium -> MediumShell(current, subPage, onSelect, onSelectSub, content)
+        else -> ExpandedShell(current, subPage, onSelect, onSelectSub, content)
     }
 }
 
 @Composable
 private fun CompactShell(
     current: Destination,
+    subPage: MorePage?,
     onSelect: (Destination) -> Unit,
-    content: @Composable (Destination, PaddingValues) -> Unit,
+    onSelectSub: (MorePage) -> Unit,
+    content: @Composable (Destination, MorePage?, PaddingValues, (MorePage) -> Unit) -> Unit,
 ) {
     Scaffold(
         bottomBar = {
@@ -74,20 +80,22 @@ private fun CompactShell(
                 }
             }
         },
-    ) { padding -> content(current, padding) }
+    ) { padding -> content(current, subPage, padding, onSelectSub) }
 }
 
 @Composable
 private fun MediumShell(
     current: Destination,
+    subPage: MorePage?,
     onSelect: (Destination) -> Unit,
-    content: @Composable (Destination, PaddingValues) -> Unit,
+    onSelectSub: (MorePage) -> Unit,
+    content: @Composable (Destination, MorePage?, PaddingValues, (MorePage) -> Unit) -> Unit,
 ) {
     Row(modifier = Modifier.fillMaxSize()) {
         NavigationRail {
-            Destination.entries.forEach { dest ->
+            Destination.entries.filter { it != Destination.MORE }.forEach { dest ->
                 NavigationRailItem(
-                    selected = current == dest,
+                    selected = current == dest && subPage == null,
                     onClick = { onSelect(dest) },
                     icon = {
                         Icon(
@@ -98,23 +106,34 @@ private fun MediumShell(
                     label = { Text(dest.label) },
                 )
             }
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+            MorePage.entries.forEach { page ->
+                NavigationRailItem(
+                    selected = subPage == page,
+                    onClick = { onSelectSub(page) },
+                    icon = { Text(page.emoji, style = MaterialTheme.typography.titleMedium) },
+                    label = { Text(page.label) },
+                )
+            }
         }
-        Scaffold { padding -> content(current, padding) }
+        Scaffold { padding -> content(current, subPage, padding, onSelectSub) }
     }
 }
 
 @Composable
 private fun ExpandedShell(
     current: Destination,
+    subPage: MorePage?,
     onSelect: (Destination) -> Unit,
-    content: @Composable (Destination, PaddingValues) -> Unit,
+    onSelectSub: (MorePage) -> Unit,
+    content: @Composable (Destination, MorePage?, PaddingValues, (MorePage) -> Unit) -> Unit,
 ) {
     PermanentNavigationDrawer(
         drawerContent = {
             PermanentDrawerSheet(modifier = Modifier.padding(end = 8.dp)) {
-                Destination.entries.forEach { dest ->
+                Destination.entries.filter { it != Destination.MORE }.forEach { dest ->
                     NavigationDrawerItem(
-                        selected = current == dest,
+                        selected = current == dest && subPage == null,
                         onClick = { onSelect(dest) },
                         icon = {
                             Icon(
@@ -126,14 +145,19 @@ private fun ExpandedShell(
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                     )
                 }
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp))
+                MorePage.entries.forEach { page ->
+                    NavigationDrawerItem(
+                        selected = subPage == page,
+                        onClick = { onSelectSub(page) },
+                        icon = { Text(page.emoji, style = MaterialTheme.typography.titleMedium) },
+                        label = { Text(page.label) },
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                    )
+                }
             }
         },
     ) {
-        Scaffold { padding -> content(current, padding) }
+        Scaffold { padding -> content(current, subPage, padding, onSelectSub) }
     }
 }
-
-@Suppress("UnusedPrivateMember")
-private val DRAWER_VAL_UNUSED = DrawerValue.Closed
-@Suppress("UnusedPrivateMember")
-private val MODAL_DRAWER_UNUSED: @Composable () -> Unit = { ModalDrawerSheet { } }

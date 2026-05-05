@@ -11,6 +11,7 @@ import com.poweralarm.core.domain.model.DomainJson
 import com.poweralarm.core.domain.model.Recurrence
 import com.poweralarm.core.domain.model.RingerLayoutPolicy
 import com.poweralarm.core.domain.model.SnoozePolicy
+import com.poweralarm.core.domain.model.TimezoneMode
 import com.poweralarm.core.domain.port.AlarmRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -36,6 +37,8 @@ class AlarmRepositoryImpl(private val dao: AlarmDao) : AlarmRepository {
         label = e.label,
         hour = e.hour,
         minute = e.minute,
+        timezoneMode = if (e.timezoneMode == "fixed") TimezoneMode.Fixed else TimezoneMode.Device,
+        timezoneId = e.timezoneId,
         enabled = e.enabled,
         profileId = e.profileId,
         recurrence = DomainJson.decodeFromString(Recurrence.serializer(), e.recurrenceJson),
@@ -56,6 +59,8 @@ class AlarmRepositoryImpl(private val dao: AlarmDao) : AlarmRepository {
         label = a.label,
         hour = a.hour,
         minute = a.minute,
+        timezoneMode = if (a.timezoneMode is TimezoneMode.Fixed) "fixed" else "device",
+        timezoneId = a.timezoneId,
         enabled = a.enabled,
         profileId = a.profileId,
         recurrenceJson = DomainJson.encodeToString(Recurrence.serializer(), a.recurrence),

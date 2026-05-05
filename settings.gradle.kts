@@ -43,6 +43,7 @@ include(
     ":feature:statistics",
     ":feature:profiles",
     ":feature:wear",
+    ":feature:onboarding",
 )
 
 // integrations

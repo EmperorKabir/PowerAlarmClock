@@ -42,26 +42,33 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.poweralarm.core.settings.SettingDescriptor
+import com.poweralarm.core.settings.SettingsCategory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     descriptors: List<SettingDescriptor<*>>,
     onChange: (id: String, value: Any) -> Unit,
+    initialExpertMode: Boolean = false,
 ) {
     var query by remember { mutableStateOf("") }
-    var openGroup by remember { mutableStateOf<String?>(null) }
+    var openCategory by remember { mutableStateOf<SettingsCategory?>(null) }
+    var expertMode by remember { mutableStateOf(initialExpertMode) }
 
-    val grouped = remember(descriptors) {
-        descriptors.groupBy { it.groupPath.substringBefore('.') }.toSortedMap()
+    val visible = remember(descriptors, expertMode) {
+        if (expertMode) descriptors else descriptors.filterNot { it.advanced }
     }
-    val results = remember(descriptors, query) {
+    val groupedByCategory = remember(visible) {
+        SettingsCategory.entries.associateWith { cat -> visible.filter { it.category == cat } }
+            .filterValues { it.isNotEmpty() }
+    }
+    val results = remember(visible, query) {
         if (query.isBlank()) emptyList()
-        else descriptors.filter {
+        else visible.filter {
             it.id.contains(query, ignoreCase = true) ||
                 it.label.contains(query, ignoreCase = true) ||
                 it.helpText.contains(query, ignoreCase = true) ||
-                it.groupPath.contains(query, ignoreCase = true)
+                it.category.title.contains(query, ignoreCase = true)
         }
     }
 
@@ -75,19 +82,32 @@ fun SettingsScreen(
             OutlinedTextField(
                 value = query,
                 onValueChange = { query = it },
-                placeholder = { Text("Search 165+ settings…") },
+                placeholder = { Text("Search settings…") },
                 leadingIcon = { Icon(Icons.Outlined.Search, null) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
 
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text("Show advanced settings", style = MaterialTheme.typography.titleSmall)
+                    Text(
+                        if (expertMode) "All ${descriptors.size} options visible"
+                        else "${visible.size} of ${descriptors.size} shown — turn on for power-user knobs",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Switch(checked = expertMode, onCheckedChange = { expertMode = it })
+            }
+
             when {
                 query.isNotBlank() -> SearchResults(results, onChange)
-                openGroup == null -> GroupList(grouped) { openGroup = it }
-                else -> GroupDetail(
-                    group = openGroup!!,
-                    descriptors = grouped[openGroup].orEmpty(),
-                    onBack = { openGroup = null },
+                openCategory == null -> CategoryList(groupedByCategory) { openCategory = it }
+                else -> CategoryDetail(
+                    category = openCategory!!,
+                    descriptors = groupedByCategory[openCategory].orEmpty(),
+                    onBack = { openCategory = null },
                     onChange = onChange,
                 )
             }
@@ -96,11 +116,14 @@ fun SettingsScreen(
 }
 
 @Composable
-private fun GroupList(grouped: Map<String, List<SettingDescriptor<*>>>, onOpen: (String) -> Unit) {
+private fun CategoryList(
+    grouped: Map<SettingsCategory, List<SettingDescriptor<*>>>,
+    onOpen: (SettingsCategory) -> Unit,
+) {
     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
-        items(grouped.entries.toList(), key = { it.key }) { (group, list) ->
+        items(grouped.entries.toList(), key = { it.key.name }) { (cat, list) ->
             Card(
-                modifier = Modifier.fillMaxWidth().clickable { onOpen(group) },
+                modifier = Modifier.fillMaxWidth().clickable { onOpen(cat) },
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 shape = RoundedCornerShape(20.dp),
             ) {
@@ -108,16 +131,18 @@ private fun GroupList(grouped: Map<String, List<SettingDescriptor<*>>>, onOpen: 
                     modifier = Modifier.fillMaxWidth().padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
+                    Text(cat.emoji, style = MaterialTheme.typography.headlineSmall)
+                    Column(modifier = Modifier.weight(1f).padding(start = 12.dp)) {
+                        Text(cat.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                         Text(
-                            group.replaceFirstChar { it.uppercase() },
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
+                            cat.tagline,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
                             "${list.size} setting${if (list.size == 1) "" else "s"}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary,
                         )
                     }
                     Icon(Icons.Filled.ChevronRight, null)
@@ -128,8 +153,8 @@ private fun GroupList(grouped: Map<String, List<SettingDescriptor<*>>>, onOpen: 
 }
 
 @Composable
-private fun GroupDetail(
-    group: String,
+private fun CategoryDetail(
+    category: SettingsCategory,
     descriptors: List<SettingDescriptor<*>>,
     onBack: () -> Unit,
     onChange: (String, Any) -> Unit,
@@ -138,7 +163,17 @@ private fun GroupDetail(
         Box(
             modifier = Modifier.fillMaxWidth().clickable { onBack() }.padding(vertical = 4.dp),
         ) { Text("← Back to all settings", color = MaterialTheme.colorScheme.primary) }
-        Text(group.replaceFirstChar { it.uppercase() }, style = MaterialTheme.typography.headlineSmall)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(category.emoji, style = MaterialTheme.typography.headlineMedium)
+            Column(modifier = Modifier.padding(start = 8.dp)) {
+                Text(category.title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
+                Text(
+                    category.tagline,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
         LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxSize()) {
             items(descriptors, key = { it.id }) { d -> DescriptorRow(d, onChange) }
         }
@@ -167,11 +202,13 @@ private fun DescriptorRow(descriptor: SettingDescriptor<*>, onChange: (String, A
     ) {
         Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text(descriptor.label, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
-            Text(
-                descriptor.groupPath,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            if (descriptor.helpText.isNotBlank()) {
+                Text(
+                    descriptor.helpText,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
             DescriptorEditor(descriptor, onChange)
         }
     }
@@ -184,7 +221,7 @@ private fun DescriptorEditor(descriptor: SettingDescriptor<*>, onChange: (String
         is SettingDescriptor.BoolSetting -> {
             var v by remember(descriptor.id) { mutableStateOf(descriptor.default) }
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Enabled", modifier = Modifier.weight(1f))
+                Text(if (v) "On" else "Off", modifier = Modifier.weight(1f))
                 Switch(checked = v, onCheckedChange = { v = it; onChange(descriptor.id, it) })
             }
         }

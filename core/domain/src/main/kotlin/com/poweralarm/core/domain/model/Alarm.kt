@@ -8,6 +8,8 @@ data class Alarm(
     val label: String = "",
     val hour: Int,
     val minute: Int,
+    val timezoneMode: TimezoneMode = TimezoneMode.Device,
+    val timezoneId: String = "",
     val recurrence: Recurrence = Recurrence.Once,
     val profileId: String = "default",
     val enabled: Boolean = true,
@@ -19,6 +21,12 @@ data class Alarm(
     val automation: AutomationHooks = AutomationHooks(),
     val metadataJson: String = "{}",
 )
+
+@Serializable
+sealed class TimezoneMode {
+    @Serializable data object Device : TimezoneMode()
+    @Serializable data object Fixed : TimezoneMode()
+}
 
 @Serializable
 sealed class Recurrence {

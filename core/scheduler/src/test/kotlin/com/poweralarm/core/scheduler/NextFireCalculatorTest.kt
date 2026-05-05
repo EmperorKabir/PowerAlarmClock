@@ -13,7 +13,7 @@ class NextFireCalculatorTest {
 
     private val zone = ZoneId.of("Europe/London")
     private val now = ZonedDateTime.of(2026, 5, 4, 12, 0, 0, 0, zone) // Mon 12:00
-    private val calc = NextFireCalculator(now = { now }, zoneId = zone)
+    private val calc = NextFireCalculator(now = { now }, systemZone = { zone })
 
     @Test
     fun `daily alarm fires same day if hour is in the future`() {

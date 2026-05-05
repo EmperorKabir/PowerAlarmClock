@@ -3,6 +3,7 @@ package com.poweralarm.core.scheduler
 import com.poweralarm.core.domain.model.Alarm
 import com.poweralarm.core.domain.model.Condition
 import com.poweralarm.core.domain.model.Recurrence
+import com.poweralarm.core.domain.model.TimezoneMode
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -21,7 +22,7 @@ import java.time.temporal.TemporalAdjusters
  */
 class NextFireCalculator(
     private val now: () -> ZonedDateTime = { ZonedDateTime.now() },
-    private val zoneId: ZoneId = ZoneId.systemDefault(),
+    private val systemZone: () -> ZoneId = { ZoneId.systemDefault() },
 ) {
 
     fun nextFire(alarm: Alarm, ctx: ConditionContext = ConditionContext()): ZonedDateTime? {
@@ -38,21 +39,27 @@ class NextFireCalculator(
                 continue
             }
             candidate = applyAdvance(alarm, candidate, ctx)
-            return candidate
+            return candidate.withZoneSameInstant(systemZone())
         }
         return null
     }
 
+    private fun resolveZone(alarm: Alarm): ZoneId = when (alarm.timezoneMode) {
+        is TimezoneMode.Fixed -> runCatching { ZoneId.of(alarm.timezoneId) }.getOrElse { systemZone() }
+        is TimezoneMode.Device -> systemZone()
+    }
+
     private fun baseNext(alarm: Alarm): ZonedDateTime? {
-        val nowZdt = now().withZoneSameInstant(zoneId)
+        val zone = resolveZone(alarm)
+        val nowZdt = now().withZoneSameInstant(zone)
         val time = LocalTime.of(alarm.hour, alarm.minute)
-        val today = nowZdt.toLocalDate().atTime(time).atZone(zoneId)
+        val today = nowZdt.toLocalDate().atTime(time).atZone(zone)
         val baseToday = if (today.isAfter(nowZdt)) today else today.plusDays(1)
 
         return when (val r = alarm.recurrence) {
             is Recurrence.Once -> if (today.isAfter(nowZdt)) today else null
             is Recurrence.Daily -> baseToday
-            is Recurrence.Weekly -> nextWeekly(nowZdt, time, r.daysOfWeek)
+            is Recurrence.Weekly -> nextWeekly(nowZdt, time, r.daysOfWeek, zone)
             is Recurrence.Cron -> baseToday
             is Recurrence.SolarAnchored, is Recurrence.Adhan,
             is Recurrence.Polyphasic, is Recurrence.ShiftPattern,
@@ -61,12 +68,12 @@ class NextFireCalculator(
         }
     }
 
-    private fun nextWeekly(nowZdt: ZonedDateTime, time: LocalTime, days: Set<Int>): ZonedDateTime? {
+    private fun nextWeekly(nowZdt: ZonedDateTime, time: LocalTime, days: Set<Int>, zone: ZoneId): ZonedDateTime? {
         if (days.isEmpty()) return null
         for (offset in 0..LOOKAHEAD_DAYS) {
             val date = nowZdt.toLocalDate().plusDays(offset.toLong())
             if (date.dayOfWeek.value % WEEK in days || date.dayOfWeek.value in days) {
-                val candidate = LocalDateTime.of(date, time).atZone(zoneId)
+                val candidate = LocalDateTime.of(date, time).atZone(zone)
                 if (candidate.isAfter(nowZdt)) return candidate
             }
         }

@@ -58,6 +58,10 @@ import com.poweralarm.core.domain.model.Alarm
 import com.poweralarm.core.domain.model.Condition
 import com.poweralarm.core.domain.model.DismissalRequirement
 import com.poweralarm.core.domain.model.Recurrence
+import com.poweralarm.core.domain.model.TimezoneMode
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 enum class ListFilter(val label: String) {
     ALL("All"),
@@ -178,12 +182,33 @@ private fun AlarmCard(alarm: Alarm, onToggle: (Long, Boolean) -> Unit, onClick: 
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.primary,
                     )
+                    timezoneLabel(alarm)?.let { tz ->
+                        Text(
+                            text = tz,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.tertiary,
+                        )
+                    }
                 }
                 Switch(checked = alarm.enabled, onCheckedChange = { onToggle(alarm.id, it) })
             }
             ConditionStrip(alarm)
         }
     }
+}
+
+private fun timezoneLabel(alarm: Alarm): String? {
+    if (alarm.timezoneMode !is TimezoneMode.Fixed || alarm.timezoneId.isBlank()) return null
+    val device = ZoneId.systemDefault()
+    val pinned = runCatching { ZoneId.of(alarm.timezoneId) }.getOrNull() ?: return null
+    if (pinned == device) return null
+    val now = ZonedDateTime.now()
+    val deviceTime = LocalTime.of(alarm.hour, alarm.minute)
+        .atDate(now.toLocalDate())
+        .atZone(pinned)
+        .withZoneSameInstant(device)
+        .toLocalTime()
+    return "🌍 ${"%02d:%02d".format(alarm.hour, alarm.minute)} ${pinned.id} · here ${"%02d:%02d".format(deviceTime.hour, deviceTime.minute)}"
 }
 
 @Composable
